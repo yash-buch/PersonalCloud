@@ -1,9 +1,11 @@
 package com.binc.personalcloud.core
 
 import org.junit.Test
-import com.binc.personalcloud.core.interactors.Result
+import com.binc.personalcloud.core.interactors.Response
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.`is`
 
 class BaseUseCaseTest {
 
@@ -12,7 +14,8 @@ class BaseUseCaseTest {
         val uc = TestUseCase()
         runBlocking {
             val result = uc.sampleCallNoParams()
-            Assert.assertEquals(result.result, "BaseUseCase no param test")
+            assertThat(result is Response.Success<String>, `is`(true))
+            assertThat((result as Response.Success<String>).value, `is`("BaseUseCase no param test"))
         }
     }
 
@@ -21,14 +24,15 @@ class BaseUseCaseTest {
         val uc = TestUseCase()
         runBlocking {
             val result = uc.sampleCallNoParams("BaseUseCase test")
-            Assert.assertEquals(result.result, "BaseUseCase test")
+            assertThat(result is Response.Success<String>, `is`(true))
+            assertThat((result as Response.Success<String>).value, `is`("BaseUseCase test"))
         }
     }
 
     class TestUseCase: BaseUseCase<String>() {
-        lateinit var retVal: String
+        private lateinit var retVal: String
 
-        suspend fun sampleCallNoParams(ret: String = "BaseUseCase no param test"): Result<String> {
+        suspend fun sampleCallNoParams(ret: String = "BaseUseCase no param test"): Response<String> {
             retVal = ret
             return execute()
         }

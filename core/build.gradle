@@ -15,4 +15,6 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
     //runBlockingTest, TestCoroutineDispatcher
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_version"
+    //assert matchers
+    testImplementation "org.hamcrest:hamcrest-all:1.3"
 }

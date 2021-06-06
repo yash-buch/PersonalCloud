@@ -1,14 +1,13 @@
 package com.binc.personalcloud.core
 
-import com.binc.personalcloud.core.interactors.Result
+import com.binc.personalcloud.core.interactors.Response
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 abstract class BaseAsyncUseCase<O>(private val dispatcher: CoroutineDispatcher) {
     protected abstract suspend fun doInBackground(): O
 
-    protected suspend fun executeAsync(): Result<O> = withContext(dispatcher) {
-        return@withContext Result(doInBackground())
+    protected suspend fun executeAsync(): Response<O> = withContext(dispatcher) {
+        return@withContext Response.Success(doInBackground())
     }
 }
