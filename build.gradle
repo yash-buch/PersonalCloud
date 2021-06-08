@@ -4,6 +4,8 @@ buildscript {
         compose_version = '1.0.0-beta07'
         kotlin_version = '1.4.3' // for coroutines in :core
         junit_version = '4.13.2' // for unit testing
+        hamcrest_version = '1.3' // for matchers in unit testing
+        mockito_version = '1.10.19' // for mocking objects
     }
     repositories {
         google()

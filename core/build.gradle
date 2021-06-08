@@ -16,5 +16,7 @@ dependencies {
     //runBlockingTest, TestCoroutineDispatcher
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_version"
     //assert matchers
-    testImplementation "org.hamcrest:hamcrest-all:1.3"
+    testImplementation "org.hamcrest:hamcrest-all:$hamcrest_version"
+    //mockito
+    testImplementation "org.mockito:mockito-core:$mockito_version"
 }
