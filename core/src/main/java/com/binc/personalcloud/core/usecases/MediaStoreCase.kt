@@ -2,6 +2,7 @@ package com.binc.personalcloud.core.usecases
 
 import com.binc.personalcloud.core.BaseAsyncUseCase
 import com.binc.personalcloud.core.entity.ILogger
+import com.binc.personalcloud.core.entity.MediaAccessException
 import com.binc.personalcloud.core.interactors.DataRepository
 import com.binc.personalcloud.core.entity.PlaceHolder
 import com.binc.personalcloud.core.interactors.Response
@@ -28,12 +29,14 @@ private val logger: ILogger)
         return executeAsync()
     }
 
-    override suspend fun doInBackground(): List<PlaceHolder> {
-        return when(mediaType) {
+    override suspend fun doInBackground(): Response<List<PlaceHolder>> {
+        val result = when(mediaType) {
             MediaType.PHOTO -> repository.getPhotos()
             MediaType.VIDEO -> repository.getVideos()
             MediaType.ALL -> repository.getData()
         }
+        return result?.let { Response.Success(it) }
+            ?: Response.Failure(MediaAccessException("Error in fetching media"))
     }
 }
 

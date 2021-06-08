@@ -1,11 +1,11 @@
 package com.binc.personalcloud.core
 
-import org.junit.Test
+import com.binc.personalcloud.core.entity.MediaAccessException
 import com.binc.personalcloud.core.interactors.Response
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
+import org.junit.Test
 
 class BaseUseCaseTest {
 
@@ -15,7 +15,10 @@ class BaseUseCaseTest {
         runBlocking {
             val result = uc.sampleCallNoParams()
             assertThat(result is Response.Success<String>, `is`(true))
-            assertThat((result as Response.Success<String>).value, `is`("BaseUseCase no param test"))
+            assertThat(
+                (result as Response.Success<String>).value,
+                `is`("BaseUseCase no param test")
+            )
         }
     }
 
@@ -29,7 +32,24 @@ class BaseUseCaseTest {
         }
     }
 
-    class TestUseCase: BaseUseCase<String>() {
+    @Test
+    fun test_buc_no_params_fail() {
+        val uc = TestUseCaseTwo()
+        runBlocking {
+            val result = uc.sampleCallNoParams("BaseUseCase test")
+            assertThat(result is Response.Failure<String>, `is`(true))
+            assertThat(
+                (result as Response.Failure<String>).error is MediaAccessException,
+                `is`(true)
+            )
+            assertThat(
+                result.error.message,
+                `is`("Something went wrong")
+            )
+        }
+    }
+
+    class TestUseCase : BaseUseCase<String>() {
         private lateinit var retVal: String
 
         suspend fun sampleCallNoParams(ret: String = "BaseUseCase no param test"): Response<String> {
@@ -37,8 +57,21 @@ class BaseUseCaseTest {
             return execute()
         }
 
-        override suspend fun doInBackground(): String {
-            return retVal
+        override suspend fun doInForeground(): Response<String> {
+            return Response.Success(retVal)
+        }
+    }
+
+    class TestUseCaseTwo : BaseUseCase<String>() {
+        private lateinit var retVal: String
+
+        suspend fun sampleCallNoParams(ret: String = "BaseUseCase no param test"): Response<String> {
+            retVal = ret
+            return execute()
+        }
+
+        override suspend fun doInForeground(): Response<String> {
+            return Response.Failure(MediaAccessException("Something went wrong"))
         }
     }
 }
