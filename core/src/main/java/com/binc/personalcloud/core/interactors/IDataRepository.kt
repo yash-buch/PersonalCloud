@@ -6,4 +6,7 @@ interface IDataRepository {
     fun getData(): List<IMedia>? = null
     fun getPhotos(): List<IMedia>? = null
     fun getVideos(): List<IMedia>? = null
+
+    fun savePhoto(path: String) = null
+    fun saveVideo(path: String) = null
 }

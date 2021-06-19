@@ -37,9 +37,9 @@ class BaseUseCaseTest {
         val uc = TestUseCaseTwo()
         runBlocking {
             val result = uc.sampleCallNoParams("BaseUseCase test")
-            assertThat(result is Response.Failure<String>, `is`(true))
+            assertThat(result is Response.FailedWithException<String>, `is`(true))
             assertThat(
-                (result as Response.Failure<String>).error is MediaAccessException,
+                (result as Response.FailedWithException<String>).error is MediaAccessException,
                 `is`(true)
             )
             assertThat(
@@ -71,7 +71,7 @@ class BaseUseCaseTest {
         }
 
         override suspend fun doInForeground(): Response<String> {
-            return Response.Failure(MediaAccessException("Something went wrong"))
+            return Response.FailedWithException(MediaAccessException("Something went wrong"))
         }
     }
 }

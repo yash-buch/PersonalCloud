@@ -36,7 +36,7 @@ class MediaStoreCase(dispatcher: CoroutineDispatcher, private val repository: ID
             MediaType.ALL -> repository.getData()
         }
         return result?.let { Response.Success(it) }
-            ?: Response.Failure(MediaAccessException("Error in fetching media"))
+            ?: Response.FailedWithException(MediaAccessException("Error in fetching media"))
     }
 }
 

@@ -3,14 +3,13 @@ package com.binc.personalcloud.core
 import com.binc.personalcloud.core.entity.MediaAccessException
 import com.binc.personalcloud.core.interactors.Response
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
+@ExperimentalCoroutinesApi //for TestCoroutineDispatcher
 class BaseAsyncUseCaseTest {
     private val testDispatcher = TestCoroutineDispatcher()
 
@@ -30,7 +29,7 @@ class BaseAsyncUseCaseTest {
     @Test
     fun test_bauc_params() {
         val uc = TestUseCase(testDispatcher)
-        runBlocking {
+        runBlockingTest {
             val result = uc.sampleCallNoParams("BaseUseCase test")
             assertThat(result is Response.Success<String>, `is`(true))
             assertThat(
@@ -43,11 +42,11 @@ class BaseAsyncUseCaseTest {
     @Test
     fun test_bauc_no_params_fail() {
         val uc = TestUseCaseTwo(testDispatcher)
-        runBlocking {
+        runBlockingTest {
             val result = uc.sampleCallNoParams("BaseUseCase test")
-            assertThat(result is Response.Failure<String>, `is`(true))
+            assertThat(result is Response.FailedWithException<String>, `is`(true))
             assertThat(
-                (result as Response.Failure<String>).error is MediaAccessException,
+                (result as Response.FailedWithException<String>).error is MediaAccessException,
                 `is`(true)
             )
             assertThat(
@@ -81,7 +80,7 @@ class BaseAsyncUseCaseTest {
         }
 
         override suspend fun doInBackground(): Response<String> {
-            return Response.Failure(MediaAccessException("Something went wrong"))
+            return Response.FailedWithException(MediaAccessException("Something went wrong"))
         }
     }
 }
